@@ -1,0 +1,15 @@
+{
+  "name": "community",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:GrazzRootz/community.git",
+  "author": "Sam Marshall <sjmarshy@gmail.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+      "start": "node ./src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
