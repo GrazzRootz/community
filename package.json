@@ -7,9 +7,12 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-      "start": "node ./src/index.js"
+    "start": "node ./src/index.js"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
+    "express-jwt-authz": "^2.3.1",
+    "jwks-rsa": "^1.6.0"
   }
 }
