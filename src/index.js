@@ -1,7 +1,8 @@
-const express  = require('express');
-const jwt      = require('express-jwt');
-const jwtAuthz = require('express-jwt-authz');
-const jwksRSA   = require('jwks-rsa');
+const express                            = require('express');
+const jwt                                = require('express-jwt');
+const jwtAuthz                           = require('express-jwt-authz');
+const jwksRSA                            = require('jwks-rsa');
+const cors                               = require('cors')
 const { allEvents, appendEvents, event } = require('./events');
 
 const app = express();
@@ -13,27 +14,24 @@ const checkJWT = jwt({
         jwksRequestsPerMinute: 5,
         jwksUri: 'https://dev-112l54tu.eu.auth0.com/.well-known/jwks.json'
     }),
-    audience: 'grazzrootzcommunity',
+    audience: 'grazzrootzgarden',
     issuer: 'https://dev-112l54tu.eu.auth0.com/',
     algorithms: ['RS256']
 })
 
 
-const checkDiaryAuth = jwtAuthz(['read:diary']);
-const checkEventAuth = jwtAuthz(['read:calendar']);
+const checkEventAuth = jwtAuthz(['write:calendar']);
 
+app.use(cors());
 app.use(express.json());
 
-// auth example
-// app.get('/event', checkJWT, checkEventAuth, (_, res) => res.send('Hey!'));
-
-app.get('/event', (_, res) => {
+app.get('/event', checkJWT, (_, res) => {
     return allEvents().then((x) => {
         return res.json(x);
     });
 });
 
-app.post('/event', (req, res) => {
+app.post('/event', checkJWT, checkEventAuth, (req, res) => {
     if (!req.body) {
         return res.status(400).send('Bad Request');
     } else {
@@ -63,4 +61,4 @@ app.post('/event', (req, res) => {
 });
 
 
-app.listen(3000);
+app.listen(4000);
