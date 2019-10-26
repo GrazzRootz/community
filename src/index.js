@@ -2,6 +2,7 @@ const express  = require('express');
 const jwt      = require('express-jwt');
 const jwtAuthz = require('express-jwt-authz');
 const jwksRSA   = require('jwks-rsa');
+const { allEvents, appendEvents, event } = require('./events');
 
 const app = express();
 
@@ -19,10 +20,47 @@ const checkJWT = jwt({
 
 
 const checkDiaryAuth = jwtAuthz(['read:diary']);
-const checkCalendarAuth = jwtAuthz(['read:calendar']);
+const checkEventAuth = jwtAuthz(['read:calendar']);
 
-app.get('*', checkJWT, checkDiaryAuth, (_, res) => {
-    return res.send('Hey!');
+app.use(express.json());
+
+// auth example
+// app.get('/event', checkJWT, checkEventAuth, (_, res) => res.send('Hey!'));
+
+app.get('/event', (_, res) => {
+    return allEvents().then((x) => {
+        return res.json(x);
+    });
 });
+
+app.post('/event', (req, res) => {
+    if (!req.body) {
+        return res.status(400).send('Bad Request');
+    } else {
+
+        const {
+            title,
+            user,
+            date,
+            desc,
+            garden
+        } = req.body;
+
+        return appendEvents([
+            event({
+                title,
+                user,
+                date,
+                desc,
+                garden
+            })
+        ]).then(() => {
+            return res.status(200).send('success');
+        }).catch(err => {
+            return res.status(500).send(err.message);
+        });
+    }
+});
+
 
 app.listen(3000);
