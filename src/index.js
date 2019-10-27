@@ -27,12 +27,14 @@ const checkDiaryAuth = jwtAuthz(['write:diary']);
 app.use(cors());
 app.use(express.json());
 
+app.options('/event', cors());
 app.get('/event', checkJWT, (_, res) => {
     return allEvents().then((x) => {
         return res.json(x);
     });
 });
 
+app.options('/diary', cors());
 app.get('/diary', checkJWT, (_, res) => {
     return allEntries().then(es => res.json(es));
 });

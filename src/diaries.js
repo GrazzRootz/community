@@ -33,7 +33,7 @@ function writeData(data) {
 function appendDiary(entry) {
     return readData().then(data =>  
         writeData(JSON.stringify({
-            entries: data.entries.concat(entry);
+            entries: data.entries.concat(entry)
         }))
     );
 }
